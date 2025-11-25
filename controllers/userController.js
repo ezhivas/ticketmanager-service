@@ -6,11 +6,13 @@ const jwt = require("jsonwebtoken");
 exports.createUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+    const adminHeader = req.headers.admin;
+    const role = adminHeader === 'admin' ? 'admin' : 'user';
     
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    const newUser = await User.create({ username, email, password: hashedPassword });
+    const newUser = await User.create({ username, email, password: hashedPassword, role });
     res.status(201).json(newUser);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -116,7 +118,7 @@ exports.loginUser = async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: user.id, email: user.email, username: user.username },
+      { id: user.id, email: user.email, username: user.username, role: user.role },
       process.env.JWT_SECRET || 'your_secret_key',
       { expiresIn: '24h' }
     );
@@ -124,7 +126,7 @@ exports.loginUser = async (req, res) => {
     res.status(200).json({
       message: 'Login successful',
       token,
-      user: { id: user.id, username: user.username, email: user.email }
+      user: { id: user.id, username: user.username, email: user.email, role: user.role }
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

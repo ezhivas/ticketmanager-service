@@ -6,6 +6,8 @@ const sequelize = require('./config/database');
 const validateUser = require('./middleware/validationMiddleware');
 const userRoutes = require('./routes/userRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
+const { logger } = require('sequelize/lib/utils/logger');
+const loggerMiddleware = require('./middleware/loggerMiddleware');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -13,8 +15,9 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware to parse JSON bodies
 app.use(express.json());
+
+app.use(loggerMiddleware);
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
