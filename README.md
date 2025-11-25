@@ -59,7 +59,7 @@ npm run dev
 npm start
 ```
 
-The server will start at `http://localhost:port`
+The server will start at `http://localhost:3000`
 
 ## API Routes
 
@@ -107,18 +107,7 @@ Response:
   }
 }
 ```
-
-### Example: Create Ticket (with auth)
-```bash
-curl -X POST http://localhost:3000/api/tickets \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <token>" \
-  -d '{
-    "title": "Bug Fix",
-    "description": "Fix login bug",
-    "priority": "high"
-  }'
-```
+## to create user with admin role use header admin: 'admin'
 
 ## Database
 

@@ -3,9 +3,6 @@ const router = express.Router();
 const ticketController = require('../controllers/ticketController');
 const validateTicket = require('../middleware/ticketValidationMiddleware');
 const authMiddleware = require('../middleware/authMiddleware');
-const loggerMiddleware = require('../middleware/loggerMiddleware');
-
-router.use(loggerMiddleware);
 
 router.get('/tickets', ticketController.getAllTickets);
 router.get('/tickets/:id', ticketController.getTicketById);
