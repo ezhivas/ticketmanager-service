@@ -41,8 +41,8 @@ cp .env.example .env
 PORT=3000
 JWT_SECRET=your_secure_secret_key
 DB_HOST=localhost
-DB_USER=admin
-DB_PASS=password123
+DB_USER=user
+DB_PASS=password
 ```
 
 ## Running the App
@@ -57,7 +57,7 @@ npm run dev
 npm start
 ```
 
-The server will start at `http://localhost:3000`
+The server will start at `http://localhost:port`
 
 ## API Routes
 

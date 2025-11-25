@@ -1,5 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 const sequelize = require('./config/database');
 const validateUser = require('./middleware/validationMiddleware');
 const userRoutes = require('./routes/userRoutes');
@@ -13,6 +15,9 @@ const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+// Swagger documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Use routes
 app.use('/api', userRoutes);
