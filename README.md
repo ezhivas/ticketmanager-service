@@ -15,6 +15,7 @@ A Node.js/Express API for managing users and tickets with JWT authentication.
 - ✅ Logging for all requests including user.email (when applicable)
 - ✅ API documentation (Swagger)
 - ✅ Role-based access control (RBAC)
+- ✅ Default admin creation if not exist in DB from .env
 
 
 ## Prerequisites
@@ -42,11 +43,7 @@ cp .env.example .env
 
 4. Update `.env` with your configuration:
 ```
-PORT=3000
-JWT_SECRET=your_secure_secret_key
-DB_HOST=localhost
-DB_USER=user
-DB_PASS=password
+see .env.example
 ```
 
 ## Running the App
@@ -153,7 +150,6 @@ header admin: 'admin'
 
 - Add email verification
 - Add password reset functionality
-- Add r
 - Add rate limiting
 
 ## License
