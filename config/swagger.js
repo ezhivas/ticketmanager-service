@@ -139,7 +139,7 @@ const options = {
     },
   },
   apis: [
-    './docs/api.js',
+    './docs/*.js', //to allow seeing all doc files
   ],
 };
 

@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET not found in the .env file');
+}
 
 // Middleware to authenticate requests using JWT
 const authMiddleware = (req, res, next) => {

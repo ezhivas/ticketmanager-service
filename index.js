@@ -6,6 +6,8 @@ const sequelize = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
 const loggerMiddleware = require('./middleware/loggerMiddleware');
+const createDefaultAdmin = require("./utils/createDefaultAdmin");
+
 
 // Load environment variables from .env file
 dotenv.config();
@@ -42,17 +44,18 @@ app.use((err, req, res, next) => {
 
 // Sync database and start the server
 sequelize.sync({ alter: true })
-  .then(() => {
-    console.log('✅ Database synced successfully');
-    app.listen(port, () => {
-      console.log(`✅ Server is running at http://localhost:${port}`);
-    });
+  .then(async () => {
+      console.log('✅ Database synced successfully');
+
+      await createDefaultAdmin();
+
+      app.listen(port, () => {
+          console.log(`✅ Server is running at http://localhost:${port}`);
+      });
   })
   .catch((err) => {
-    console.warn('⚠️  Database sync failed, starting server without database:', err.message);
-    app.listen(port, () => {
-      console.log(`✅ Server is running at http://localhost:${port} (without database)`);
-    });
+    console.warn('❌️  Database sync failed, terminating...', err.message);
+    process.exit(1);
   });
 
 module.exports = app;
