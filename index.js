@@ -3,10 +3,8 @@ const dotenv = require('dotenv');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 const sequelize = require('./config/database');
-const validateUser = require('./middleware/validationMiddleware');
 const userRoutes = require('./routes/userRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
-const { logger } = require('sequelize/lib/utils/logger');
 const loggerMiddleware = require('./middleware/loggerMiddleware');
 
 // Load environment variables from .env file
@@ -26,9 +24,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api', userRoutes);
 app.use('/api', ticketRoutes);
 
-// Sample route
+// Health route
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Server is up and running...');
 });
 
 // 404 handler
