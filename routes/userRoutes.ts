@@ -6,7 +6,8 @@ import {
     getAllUsers,
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
+    deleteAllUsers,
 } from '../controllers/userController';
 
 
@@ -22,9 +23,10 @@ router.post('/login', login);
 router.use(authMiddleware);
 
 router.post('/users', validateUser, createUser);
-router.get('/users', roleMiddleware('admin'), getAllUsers);
-router.get('/users/:id', roleMiddleware('admin'), getUserById);
-router.put('/users/:id', roleMiddleware('admin'), validateUser, updateUser);
-router.delete('/users/:id', roleMiddleware('admin'), deleteUser);
+router.get('/users', roleMiddleware(), getAllUsers);
+router.get('/users/:id', roleMiddleware(), getUserById);
+router.put('/users/:id', roleMiddleware(), validateUser, updateUser);
+router.delete('/users/:id', roleMiddleware(), deleteUser);
+router.delete('/users/all', roleMiddleware(), deleteAllUsers);
 
 export default router;

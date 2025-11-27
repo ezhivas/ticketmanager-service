@@ -15,6 +15,9 @@ router.get('/tickets/:id', getTicketById);
 
 router.post('/tickets', validateTicket, createTicket);
 router.put('/tickets/:id', validateTicket, updateTicket);
-router.delete('/tickets/:id', roleMiddleware('admin'), deleteTicket);
+router.delete('/tickets/:id', roleMiddleware(), deleteTicket);
+
+router.get('/tickets/priority/:priority', roleMiddleware(), getTicketByPriority);
+router.get('/tickets/status/:status', roleMiddleware(), getTicketByStatus);
 
 export default router;

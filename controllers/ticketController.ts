@@ -121,7 +121,7 @@ export const getTicketByStatus = async (req: Request, res: Response) => {
 export const getTicketByPriority = async (req: Request, res: Response) => {
     try {
         const { priority } = req.params;
-        const tickets = await Ticket.findAll({where: {status: priority as any} });
+        const tickets = await Ticket.findAll({where: {priority: priority as any} });
         res.status(200).json(tickets);
     } catch (error: any) {
         res.status(500).json({ error: error.message });

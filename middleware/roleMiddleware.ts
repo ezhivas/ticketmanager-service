@@ -1,9 +1,9 @@
 import {Request, Response, NextFunction} from 'express';
 
-const roleMiddleware = (requiredRole: string = 'admin') => {
+const roleMiddleware = () => {
     return (req: Request, res: Response, next: NextFunction) => {
         try{
-            const user = (req as any).user;
+            // const user = (req as any).user;
             const userRole = (req as any).user?.role;
             if(!userRole || userRole !== 'admin') {
                 res.status(401).send('Access denied');
