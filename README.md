@@ -1,6 +1,6 @@
 # Ticket Management API
 
-A Node.js/Express API for managing users and tickets with JWT authentication.
+A Node.js/Express API for managing users and tickets with JWT authentication and RBAC.
 
 ## Features
 
