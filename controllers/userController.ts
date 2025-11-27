@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import {Request, Response, NextFunction} from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
@@ -7,7 +7,7 @@ import {config} from "../config/env";
 
 const JWT_SECRET = config.jwtSecret;
 
-export const createUser = async (req: Request, res: Response): Promise<void> => {
+export const createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {username, email, password} = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -20,30 +20,20 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
         });
         res.status(201).json(newUser);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+export const getAllUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const users = await User.findAll();
         res.status(200).json(users);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const getUserById = async (req: Request, res: Response): Promise<void> => {
+export const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {id} = req.params;
         const user = await User.findByPk(id);
@@ -54,16 +44,11 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
         }
         res.status(200).json(user);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const updateUser = async (req: Request, res: Response): Promise<void> => {
+export const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {id} = req.params;
         const {username, email, password} = req.body;
@@ -84,16 +69,11 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
         await user!.save();
         res.status(200).json(user);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {id} = req.params;
         const user = await User.findByPk(id);
@@ -106,31 +86,21 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
         await user!.destroy();
         res.status(200).json({message: 'User deleted successfully'});
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const deleteAllUsers = async (req: Request, res: Response): Promise<void> => {
+export const deleteAllUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         // FIX: Используем User (класс), а не user (переменную, которой нет)
         await User.destroy({where: {}});
         res.status(200).json({message: 'All users deleted successfully'});
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {email, password} = req.body;
 
@@ -161,11 +131,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         });
 
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };

@@ -1,8 +1,8 @@
-import {Request, Response} from 'express';
+import {NextFunction, Request, Response} from 'express';
 import Ticket, {TicketHistoryItem} from '../models/ticket';
 import {Op} from 'sequelize';
 
-export const createTicket = async (req: Request, res: Response) => {
+export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {title, description, status, priority} = req.body;
         const userEmail = req.user?.email || 'unknown';
@@ -17,31 +17,21 @@ export const createTicket = async (req: Request, res: Response) => {
 
         res.status(201).json(newTicket);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error); // Передаем ошибку дальше, её обработает app.use в index.ts
     }
 };
 
-export const getAllTickets = async (req: Request, res: Response) => {
+export const getAllTickets = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const tickets = await Ticket.findAll();
         res.status(200).json(tickets);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
 
-export const updateTicket = async (req: Request, res: Response): Promise<void> => {
+export const updateTicket = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {id} = req.params;
         const {title, description, status, priority} = req.body;
@@ -76,16 +66,11 @@ export const updateTicket = async (req: Request, res: Response): Promise<void> =
         await ticket.save();
         res.status(200).json(ticket);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const deleteTicket = async (req: Request, res: Response) => {
+export const deleteTicket = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {id} = req.params;
         const ticket = await Ticket.findByPk(id);
@@ -97,16 +82,11 @@ export const deleteTicket = async (req: Request, res: Response) => {
         await ticket.destroy();
         res.status(200).json({message: 'Ticket Deleted'});
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const getTicketById = async (req: Request, res: Response) => {
+export const getTicketById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {id} = req.params;
         const ticket = await Ticket.findByPk(id);
@@ -115,46 +95,31 @@ export const getTicketById = async (req: Request, res: Response) => {
         }
         res.status(200).json(ticket);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const getTicketByStatus = async (req: Request, res: Response) => {
+export const getTicketByStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {status} = req.params;
         const tickets = await Ticket.findAll({where: {status: status}});
         res.status(200).json(tickets);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const getTicketByPriority = async (req: Request, res: Response) => {
+export const getTicketByPriority = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {priority} = req.params;
         const tickets = await Ticket.findAll({where: {priority: priority}});
         res.status(200).json(tickets);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 };
 
-export const getTicketByText = async (req: Request, res: Response) => {
+export const getTicketByText = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {text} = req.body;
         const tickets = await Ticket.findAll({
@@ -171,11 +136,6 @@ export const getTicketByText = async (req: Request, res: Response) => {
         });
         res.status(201).json(tickets);
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            // if unknown type
-            res.status(500).json({ error: 'Unknown error occurred' });
-        }
+        next(error);
     }
 }

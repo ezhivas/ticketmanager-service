@@ -10,12 +10,7 @@ const roleMiddleware = () => {
             }
             next();
         } catch (error) {
-            if (error instanceof Error) {
-                res.status(400).json({ error: error.message });
-            } else {
-                // if unknown type
-                res.status(500).json({ error: 'Unknown error occurred' });
-            }
+            next(error);
         }
     };
 };
