@@ -7,7 +7,7 @@ const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
         const duration = Date.now() - start;
         const date = new Date();
 
-        const userEmail = (req as any).user?.email || 'anonymous';
+        const userEmail = req.user?.email || 'anonymous';
 
         console.log(
             `[${date.toISOString()}] ${req.method} ${req.originalUrl} - ${res.statusCode} (${duration}ms) - ${userEmail}`

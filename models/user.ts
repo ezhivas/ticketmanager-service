@@ -18,7 +18,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public username!:string;
     public email!:string;
     public password!:string;
-    public role!: 'admin';
+    public role!: 'user' | 'admin';
 
     public readonly createdAt!:Date;
     public readonly updatedAt!:Date;

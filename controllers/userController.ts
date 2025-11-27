@@ -18,8 +18,13 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
             role: 'user',
         });
         res.status(201).json(newUser);
-    } catch (error: any) {
-        res.status(400).json({error: error.message});
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        } else {
+            // if unknown type
+            res.status(500).json({ error: 'Unknown error occurred' });
+        }
     }
 };
 
@@ -27,8 +32,13 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
     try {
         const users = await User.findAll();
         res.status(200).json(users);
-    } catch (error: any) {
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        } else {
+            // if unknown type
+            res.status(500).json({ error: 'Unknown error occurred' });
+        }
     }
 };
 
@@ -42,8 +52,13 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
             return; // Тут у тебя было правильно!
         }
         res.status(200).json(user);
-    } catch (error: any) {
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        } else {
+            // if unknown type
+            res.status(500).json({ error: 'Unknown error occurred' });
+        }
     }
 };
 
@@ -67,8 +82,13 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 
         await user!.save();
         res.status(200).json(user);
-    } catch (error: any) {
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        } else {
+            // if unknown type
+            res.status(500).json({ error: 'Unknown error occurred' });
+        }
     }
 };
 
@@ -84,8 +104,13 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 
         await user!.destroy();
         res.status(200).json({message: 'User deleted successfully'});
-    } catch (error: any) {
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        } else {
+            // if unknown type
+            res.status(500).json({ error: 'Unknown error occurred' });
+        }
     }
 };
 
@@ -94,8 +119,13 @@ export const deleteAllUsers = async (req: Request, res: Response): Promise<void>
         // FIX: Используем User (класс), а не user (переменную, которой нет)
         await User.destroy({where: {}});
         res.status(200).json({message: 'All users deleted successfully'});
-    } catch (error: any) {
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        } else {
+            // if unknown type
+            res.status(500).json({ error: 'Unknown error occurred' });
+        }
     }
 };
 
@@ -129,7 +159,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             user: {id: user!.id, email: user!.email, role: user!.role}
         });
 
-    } catch (error: any) {
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        } else {
+            // if unknown type
+            res.status(500).json({ error: 'Unknown error occurred' });
+        }
     }
 };

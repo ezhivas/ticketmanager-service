@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import {Request, Response, NextFunction} from 'express';
+import {UserPayload} from "../types";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 if (!JWT_SECRET) {
@@ -19,8 +20,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
             res.status(401).json({ error: 'Failed to verify token' });
             return;
         }
-        (req as any).user = decoded;
-        (req as any).userId = (decoded as any).id;
+        req.user = decoded as UserPayload;
 
         next();
     });
