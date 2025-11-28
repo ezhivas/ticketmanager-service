@@ -12,9 +12,10 @@ const transporter = nodemailer.createTransport({
 
 export const sendVerificationEmail = async (to: string, token: string) => {
     const link = `${config.smtp.baseUrl}/api/verify-email?token=${token}`;
+    console.log('[DEV] Verification Link:', link);
 
     try {
-        // 👇 Зміна 1: Ми не присвоюємо результат у змінну info
+
         await transporter.sendMail({
             from: config.smtp.from,
             to,
