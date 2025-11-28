@@ -9,7 +9,8 @@ const JWT_SECRET = config.jwtSecret;
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     if (!authHeader) {
-        res.status(403).json({ error: 'No token provided' });
+        res.status(401).json({ error: 'No token provided' });
+        return;
     }
 
     const token = authHeader!.startsWith('Bearer ') ? authHeader!.slice(7) : authHeader;

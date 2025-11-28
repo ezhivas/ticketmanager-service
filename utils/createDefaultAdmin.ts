@@ -11,7 +11,7 @@ const createDefaultAdmin = async (): Promise<void> => {
         const existingAdmin = await User.findOne({ where: { email: adminEmail } });
 
         if (existingAdmin) {
-            console.log('ℹ️ Admin user already exists. Skipping.');
+            console.log('Admin user already exists. Skipping.');
             return;
         }
         console.log('Creating default admin user...');
