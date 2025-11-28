@@ -21,7 +21,8 @@ const createDefaultAdmin = async (): Promise<void> => {
             username: 'SuperAdmin',
             email: adminEmail,
             password: hashedPassword,
-            role: 'admin'
+            role: 'admin',
+            isVerified: true,
         });
 
         console.log('Default admin created successfully!');

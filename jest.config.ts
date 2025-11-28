@@ -12,7 +12,6 @@ const config: Config = {
 
     forceExit: true,
 
-
     verbose: true,
 };
 

@@ -9,9 +9,10 @@ interface UserAttributes{
     role: 'user' | 'admin';
     createdAt?:Date;
     updatedAt?:Date;
+    isVerified:boolean;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'>{}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'isVerified'> {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public id!:number;
@@ -19,6 +20,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public email!:string;
     public password!:string;
     public role!: 'user' | 'admin';
+    public isVerified!:boolean;
 
     public readonly createdAt!:Date;
     public readonly updatedAt!:Date;
@@ -59,6 +61,11 @@ User.init(
             allowNull: true,
             defaultValue: 'user',
         },
+        isVerified:{
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        }
+
     },
     {
         sequelize,

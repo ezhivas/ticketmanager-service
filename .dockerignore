@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+.git
+.idea
+.env
+database.sqlite
+npm-debug.log
+

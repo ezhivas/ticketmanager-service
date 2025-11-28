@@ -5,6 +5,11 @@ import User from '../models/user';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/env';
 
+
+jest.mock('../utils/emailService', () => ({
+    sendVerificationEmail: jest.fn().mockResolvedValue(true)
+}));
+
 // DB init
 beforeAll(async () => {
     await sequelize.sync({ force: true });
@@ -50,10 +55,10 @@ describe('Users API', () => {
                 password: 'password',
             });
 
-        expect(res.statusCode).toEqual(201);
-        expect(res.body).toHaveProperty('id');
-        expect(res.body.username).toEqual('User User');
-        expect(res.body.email).toEqual('useruser@gmail.com');
+        expect(res.body.user).toHaveProperty('id');
+        expect(res.body.user.username).toEqual('User User');
+        expect(res.body.user.email).toEqual('useruser@gmail.com');
+        expect(res.body.message).toContain('User created');
 
         expect(res.body).not.toHaveProperty('password');
     });

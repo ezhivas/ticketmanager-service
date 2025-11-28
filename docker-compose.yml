@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: ticketmanager-api
+    ports:
+      - "3000:3000"
+    volumes:
+      # DB on the host to have data
+      - ./database.sqlite:/usr/src/app/database.sqlite
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      # If in .env DB_HOST=localhost, in docker for SQLite it is not critical,
+      # but for other databases it would have to be changed to the name of the service.
+    restart: unless-stopped

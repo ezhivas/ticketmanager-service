@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import {config} from "../config/env";
+import {sendVerificationEmail} from "../utils/emailService";
 
 
 const JWT_SECRET = config.jwtSecret;
@@ -17,11 +18,73 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
             email,
             password: hashedPassword,
             role: 'user',
+            isVerified: false,
         });
 
-        res.status(201).json(newUser);
-    } catch (error) {
+
+        let verificationToken = jwt.sign(
+            {
+                id: newUser.id,
+                email: email,
+                username: username
+            },
+            JWT_SECRET,
+            {expiresIn: '1h'}
+        );
+
+        const result = await sendVerificationEmail(newUser.email, verificationToken);
+
+        if (result) {
+            res.status(201).json({
+                message: 'User created, please verify your email',
+                user: {
+                    id: newUser.id,
+                    username: newUser.username,
+                    email: newUser.email
+                }
+            });
+        }
+            else {
+            res.status(201).json({message: 'User created, but we could not send the verification email.'})}
+        } catch (error) {
         next(error);
+    }
+};
+
+export const verifyEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const { token } = req.query;
+
+        // 1. Перевіряємо, чи переданий токен
+        if (!token) {
+            res.status(400).json({ error: 'Token is missing' });
+            return;
+        }
+
+        const decoded = jwt.verify(token as string, config.jwtSecret) as { id: number };
+
+        const user = await User.findByPk(decoded.id);
+
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        if ((user as any).isVerified) {
+            res.status(200).send('Email is already verified. You can login.');
+            return;
+        }
+
+        (user as any).isVerified = true;
+        await user.save();
+
+        res.status(200).send(`
+            <h1>Email verified successfully!</h1>
+            <p>You can now close this tab and login to the application.</p>
+        `);
+
+    } catch (error) {
+        res.status(400).send('Invalid or expired verification token.');
     }
 };
 
@@ -70,7 +133,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
         await user!.save();
 
         await user!.reload({
-            attributes: { exclude: ['password'] }
+            attributes: {exclude: ['password']}
         });
 
         res.status(200).json(user);
@@ -118,7 +181,12 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
 
         if (!user) {
             res.status(404).json({error: 'No user with this email'});
-            return; // FIX: Добавлен return
+            return;
+        }
+
+        if (!user.isVerified) {
+            res.status(403).json({error: 'Please verify your email first'});
+            return;
         }
 
         const isPasswordValid = await bcrypt.compare(password, user!.password);

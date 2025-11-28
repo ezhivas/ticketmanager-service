@@ -16,6 +16,11 @@ const envSchema = Joi.object({
     EMAIL: Joi.string().email().required(),
     PASSWORD: Joi.string().min(6).required(),
     USERNAME: Joi.string().required(),
+
+    SMTP_HOST: Joi.string().required(),
+    SMTP_PORT: Joi.number().default(587),
+    SMTP_USER: Joi.string().required(),
+    SMTP_PASS: Joi.string().required(),
 })
     .unknown() // Разрешаем другие переменные в process.env, которые мы не описали
     .required();
@@ -46,5 +51,11 @@ export const config = {
         email: envVars.EMAIL,
         password: envVars.PASSWORD,
         username: envVars.USERNAME
+    },
+    smtp: {
+        host: envVars.SMTP_HOST,
+        port: envVars.SMTP_PORT,
+        pass: envVars.SMTP_PASS,
+        user: envVars.SMTP_USER,
     }
 };

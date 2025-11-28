@@ -8,6 +8,7 @@ import {
     updateUser,
     deleteUser,
     deleteAllUsers,
+    verifyEmail
 } from '../controllers/userController';
 
 
@@ -19,6 +20,7 @@ import roleMiddleware from '../middleware/roleMiddleware';
 const router = express.Router();
 
 router.post('/login', login);
+router.get('/verify-email', verifyEmail);
 
 router.use(authMiddleware);
 
