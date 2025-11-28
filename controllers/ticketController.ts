@@ -23,7 +23,17 @@ export const createTicket = async (req: Request, res: Response, next: NextFuncti
 
 export const getAllTickets = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const tickets = await Ticket.findAll();
+        const {status, priority} = req.query;
+        const whereClause: any = {};
+        if (status) {
+            whereClause.status = status;
+        }
+
+        if (priority) {
+            whereClause.priority = priority;
+        }
+
+        const tickets = await Ticket.findAll({where: whereClause});
         res.status(200).json(tickets);
     } catch (error) {
         next(error);
@@ -94,26 +104,6 @@ export const getTicketById = async (req: Request, res: Response, next: NextFunct
             return res.status(404).json({error: 'Ticket Not Found'});
         }
         res.status(200).json(ticket);
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const getTicketByStatus = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const {status} = req.params;
-        const tickets = await Ticket.findAll({where: {status: status}});
-        res.status(200).json(tickets);
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const getTicketByPriority = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const {priority} = req.params;
-        const tickets = await Ticket.findAll({where: {priority: priority}});
-        res.status(200).json(tickets);
     } catch (error) {
         next(error);
     }
