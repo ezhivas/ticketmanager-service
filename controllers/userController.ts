@@ -58,6 +58,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+
 export const verifyEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { token } = req.query;
@@ -76,12 +77,12 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
             return;
         }
 
-        if ((user as any).isVerified) {
+        if (user.isVerified) {
             res.status(200).send('Email is already verified. You can login.');
             return;
         }
 
-        (user as any).isVerified = true;
+        user.isVerified = true;
         await user.save();
 
         res.status(200).send(`
@@ -89,8 +90,10 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
             <p>You can now close this tab and login to the application.</p>
         `);
 
+
     } catch (error) {
         res.status(400).send('Invalid or expired verification token.');
+        next(error);
     }
 };
 
