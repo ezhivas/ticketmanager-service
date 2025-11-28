@@ -2,9 +2,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main", "master" ] # Запускати при пуші в main або master
+    branches: [ "main", "master" ]
   pull_request:
-    branches: [ "main", "master" ] # Та при створенні PR
+    branches: [ "main", "master" ]
 
 jobs:
   build-and-test:
@@ -23,13 +23,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm' # Автоматичне кешування npm пакетів для прискорення
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci # Використовує package-lock.json для чистого встановлення
+        run: npm ci
 
-      # Опціонально: створіть .env файл для тестів, якщо він потрібен
-      # У вашому package.json тести запускаються через jest, який може потребувати змінних
       - name: Create .env file
         run: |
           cp .env.example .env
