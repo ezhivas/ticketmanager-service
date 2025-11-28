@@ -98,8 +98,12 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
 
 export const deleteAllUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        // FIX: Используем User (класс), а не user (переменную, которой нет)
-        await User.destroy({where: {}});
+        // delete all non-admin users
+        await User.destroy({
+            where: {
+                role: 'user'
+            }
+        });
         res.status(200).json({message: 'All users deleted successfully'});
     } catch (error) {
         next(error);
