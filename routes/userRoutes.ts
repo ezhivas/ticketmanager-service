@@ -29,6 +29,6 @@ router.get('/users', roleMiddleware(), getAllUsers);
 router.get('/users/:id', roleMiddleware(), getUserById);
 router.put('/users/:id', roleMiddleware(), validateUser, updateUser);
 router.delete('/users/:id', roleMiddleware(), deleteUser);
-router.delete('/users/all', roleMiddleware(), deleteAllUsers);
+router.delete('/users/allusers', roleMiddleware(), deleteAllUsers);
 
 export default router;
