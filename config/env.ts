@@ -11,6 +11,7 @@ const envSchema = Joi.object({
     DB_USER: Joi.string().required(),
     DB_PASS: Joi.string().required(),
     DB_NAME: Joi.string().required(),
+    DB_DIALECT: Joi.string().valid('mysql', 'postgres', 'sqlite').default('mysql'),
 
     JWT_SECRET: Joi.string().required().min(10).message('JWT_SECRET is required and must be at least 10 chars'),
 
@@ -48,6 +49,7 @@ export const config = {
         user: envVars.DB_USER,
         password: envVars.DB_PASS,
         name: envVars.DB_NAME,
+        dialect: envVars.DB_DIALECT,
     },
     admin: {
         email: envVars.EMAIL,

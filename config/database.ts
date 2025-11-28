@@ -1,5 +1,4 @@
-// config/database.ts
-import { Sequelize } from 'sequelize';
+import { Sequelize, Dialect } from 'sequelize';
 import { config } from './env';
 
 const isTest = process.env.NODE_ENV === 'test';
@@ -21,8 +20,15 @@ if (isTest) {
         config.database.password,
         {
             host: config.database.host,
-            dialect: 'mysql', // dialect
+            dialect: (config.database.dialect as Dialect) || 'mysql', // Використовуємо значення з конфігу
             logging: false,
+            // SSL connection
+            dialectOptions: config.database.dialect === 'postgres' ? {
+                ssl: {
+                    require: true,
+                    rejectUnauthorized: false
+                }
+            } : {}
         }
     );
 }
