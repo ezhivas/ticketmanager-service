@@ -6,13 +6,28 @@ services:
     container_name: ticketmanager-api
     ports:
       - "3000:3000"
-    volumes:
-      # DB on the host to have data
-      - ./database.sqlite:/usr/src/app/database.sqlite
+    depends_on:
+      - db  # API wait for DB
     env_file:
       - .env
     environment:
-      - NODE_ENV=production
-      # If in .env DB_HOST=localhost, in docker for SQLite it is not critical,
-      # but for other databases it would have to be changed to the name of the service.
+      #Override host for docker (should be the same as service name)
+      - DB_HOST=db
     restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    container_name: ticketmanager-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ticket_db      # Create DB on start
+      MYSQL_USER: user               # should be the same as in .env file
+      MYSQL_PASSWORD: password       # should be the same as in .env file
+      MYSQL_ROOT_PASSWORD: rootpassword # password for root(superadmin)
+    ports:
+      - "3306:3306" # Port to access DB using DBeaver/DataGrip
+    volumes:
+      - db_data:/var/lib/mysql # Retain data
+
+volumes:
+  db_data:
