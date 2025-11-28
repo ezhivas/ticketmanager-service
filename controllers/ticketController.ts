@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import Ticket, {TicketHistoryItem} from '../models/ticket';
-import {Op} from 'sequelize';
+import sequelize from '../config/database';
+import { Op } from 'sequelize';
 
 export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -110,18 +111,16 @@ export const getTicketById = async (req: Request, res: Response, next: NextFunct
 };
 
 export const getTicketByText = async (req: Request, res: Response, next: NextFunction) => {
+    const isPostgres = sequelize.getDialect() === 'postgres';
+    const operator = isPostgres ? Op.iLike : Op.like;
     try {
         const {text} = req.body;
         const tickets = await Ticket.findAll({
             where: {
-                [Op.or]: [{
-                    title: {
-                        [Op.like]: `%${text}%`
-                    },
-                    description: {
-                        [Op.like]: `%${text}%`,
-                    }
-                }]
+                [Op.or]: [
+                    { title: { [operator]: `%${text}%` } },
+                    { description: { [operator]: `%${text}%` } }
+                ]
             }
         });
         res.status(201).json(tickets);
