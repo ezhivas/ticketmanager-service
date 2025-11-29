@@ -1,161 +1,209 @@
 # Ticket Management API
 
-A Node.js/Express API for managing users and tickets with JWT authentication and RBAC.
+REST API for managing users and tickets, built with
+**Node.js**, **Express**, and **TypeScript**.\
+It includes JWT authentication, Role-Based Access Control (RBAC), email
+verification, and detailed ticket tracking.
 
-## Features
+------------------------------------------------------------------------
 
-- ✅ User authentication with JWT
-- ✅ Password hashing with bcryptjs
-- ✅ User management (CRUD operations)
-- ✅ Ticket management (CRUD operations)
-- ✅ Track ticket creator and last updater
-- ✅ Input validation with Joi
-- ✅ SQLite database
-- ✅ Protected routes (GET, POST, PUT, DELETE require authentication)
-- ✅ Logging for all requests including user.email (when applicable)
-- ✅ API documentation (Swagger)
-- ✅ Role-based access control (RBAC)
-- ✅ Default admin creation if not exist in DB from .env
+## 🚀 Features
 
+-   **Authentication:** JWT-based auth with password hashing
+    (`bcryptjs`).
+-   **User Management:** Registration, login, full CRUD.
+-   **Email Verification:** Automated verification emails via SendGrid
+    or SMTP.
+-   **Ticket Management:** CRUD, status, priority, and history tracking.
+-   **Audit Trail:** Tracks ticket creator, last updater, and change
+    logs.
+-   **RBAC:** Admin/User roles with permission control.
+-   **Validation:** Payload validation using Joi.
+-   **Logging:** Request logging with user/session identification.
+-   **Documentation:** Auto-generated Swagger/OpenAPI docs.
+-   **Dockerized:** Ready for deployment with Docker & Docker Compose.
+-   **CI/CD:** GitHub Actions for automated testing.
 
-## Prerequisites
+------------------------------------------------------------------------
 
-- Node.js (v14 or higher)
-- npm or yarn
+## 🛠 Tech Stack
 
-## Installation
+Category           Technology
+  ------------------ --------------------------------------
+Runtime            Node.js (v18+)
+Language           TypeScript
+Framework          Express.js
+Database           MySQL (Dev), PostgreSQL (Prod), SQLite (Test)
+ORM                Sequelize
+Testing            Jest, Supertest
+Containerization   Docker, Docker Compose
 
-1. Clone the repository:
-```bash
+------------------------------------------------------------------------
+
+## 📦 Prerequisites
+
+-   Node.js 14+
+-   npm or yarn
+-   Docker & Docker Compose (optional but recommended)
+
+------------------------------------------------------------------------
+
+## 📥 Installation
+
+### 1. Clone the repository
+
+``` bash
 git clone <repository-url>
-cd sandbox
+cd ticketmanager-service
 ```
 
-2. Install dependencies:
-```bash
+### 2. Install dependencies
+
+``` bash
 npm install
 ```
 
-3. Create a `.env` file based on `.env.example`:
-```bash
+### 3. Configure environment variables
+
+``` bash
 cp .env.example .env
 ```
 
-4. Update `.env` with your configuration:
-```
-see .env.example
+Edit `.env` and set:
+
+-   Database credentials\
+-   JWT secret\
+-   Email service credentials (required for email verification)
+
+⚠ **Note:** The application validates several required environment variables and will exit at startup if they are missing. Ensure `.env` includes database credentials (DB_*), `JWT_SECRET` (recommended >= 10 characters), and SMTP or SendGrid settings for email functionality. For running tests locally, you can set `NODE_ENV=test` to use the in-memory test DB.
+
+------------------------------------------------------------------------
+
+## ▶ Running the App
+
+### **Option 1 --- Docker (Recommended)**
+
+Starts both API and database:
+
+``` bash
+docker-compose up --build
 ```
 
-## Running the App
+API will be available at:
 
-### Development mode (with auto-reload):
-```bash
+    http://localhost:3000
+
+------------------------------------------------------------------------
+
+### **Option 2 --- Local Development**
+
+Ensure your local DB is running and `.env` is configured.
+
+#### Development mode (hot reload):
+
+``` bash
 npm run dev
 ```
 
-### Production mode:
-```bash
+#### Production mode:
+
+``` bash
+npm run build
 npm start
 ```
 
-The server will start at `http://localhost:3000`
+------------------------------------------------------------------------
 
-## API Routes
+## 📚 API Documentation
 
-### Visit SwaggerUI http://localhost:3000/api-docs/
+Swagger UI available at:
 
-To access protected endpoints, include the JWT token in the Authorization header:
+    http://localhost:3000/api-docs/
 
-```bash
-Authorization: Bearer <your_jwt_token>
+------------------------------------------------------------------------
+
+## 🔐 Quick Example --- Login
+
+``` bash
+curl -X POST http://localhost:3000/api/login   -H "Content-Type: application/json"   -d '{"email":"admin@gmail.com","password":"password"}'
 ```
 
-### Example: Login
-```bash
-curl -X POST http://localhost:3000/api/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"password123"}'
+Use the returned token in headers:
+
+    Authorization: Bearer <token>
+
+------------------------------------------------------------------------
+
+## 🧪 Testing
+
+Uses an isolated in-memory SQLite database.
+
+Run all tests:
+
+``` bash
+npm test
 ```
 
-Response:
-```json
-{
-  "message": "Login successful",
-  "token": "eyJhbGciOiJIUzI1NiIs...",
-  "user": {
-    "id": 1,
-    "username": "john",
-    "email": "user@example.com"
-  }
-}
-```
-## to create user with admin role use 
-```
-header admin: 'admin'
+Run in watch mode:
+
+``` bash
+npm run test:watch
 ```
 
-## User EndPoints except Login protected with admin role
+------------------------------------------------------------------------
 
-## Database
+## 📁 Project Structure
 
-- **Type**: SQLite
-- **File**: `database.sqlite` (auto-created)
-- **Auto-sync**: Enabled (creates tables on startup)
+    .
+    ├── config/
+    │   ├── database.ts
+    │   ├── env.ts
+    │   └── swagger.ts
+    ├── controllers/
+    │   ├── userController.ts
+    │   └── ticketController.ts
+    ├── docs/
+    ├── middleware/
+    │   ├── authMiddleware.ts
+    │   ├── loggerMiddleware.ts
+    │   ├── roleMiddleware.ts
+    │   ├── validationMiddleware.ts
+    │   └── ticketValidationMiddleware.ts
+    ├── models/
+    │   ├── user.ts
+    │   └── ticket.ts
+    ├── routes/
+    │   ├── userRoutes.ts
+    │   └── ticketRoutes.ts
+    ├── tests/
+    ├── utils/
+    │   ├── createDefaultAdmin.ts
+    │   └── emailService.ts
+    ├── .env.example
+    ├── docker-compose.yml
+    ├── Dockerfile
+    └── index.ts
 
-## Project Structure
+------------------------------------------------------------------------
 
-```
-.
-├── config/
-│   └── database.js          # Database configuration
-├── controllers/
-│   ├── userController.js    # User business logic
-│   └── ticketController.js  # Ticket business logic
-├── middleware/
-│   ├── authMiddleware.js        # JWT verification
-│   ├── validationMiddleware.js  # User validation
-│   └── ticketValidationMiddleware.js  # Ticket validation
-├── models/
-│   ├── user.ts              # User model
-│   └── ticket.js            # Ticket model
-├── routes/
-│   ├── userRoutes.js        # User routes
-│   └── ticketRoutes.js      # Ticket routes
-├── .env.example             # Environment template
-├── .gitignore               # Git ignore rules
-├── package.json             # Dependencies
-└── index.js                 # Entry point
-```
+## 🔒 Security Notes
 
-## Technologies Used
+-   NEVER commit `.env`
+-   Passwords are hashed with bcryptjs
+-   Sensitive routes protected by RBAC
+-   JWT secrets must be long and unpredictable
 
-- **Express.js** - Web framework
-- **Sequelize** - ORM
-- **SQLite** - Database
-- **JWT** - Authentication
-- **bcryptjs** - Password hashing
-- **Joi** - Input validation
-- **dotenv** - Environment configuration
-- **SWAGGERUI** - API Docs
+------------------------------------------------------------------------
 
-## Security Notes
+## 🔮 Future Improvements
 
-- Passwords are hashed with bcryptjs (10 salt rounds)
-- JWT tokens expire after 24 hours
-- Never commit `.env` file (it contains secrets)
-- Protected routes require valid JWT token
-- Use HTTPS in production
+-   Password reset flow\
+-   Rate limiting\
+-   Refresh tokens support
 
-## Future Improvements
+------------------------------------------------------------------------
 
-- Add email verification
-- Add password reset functionality
-- Add rate limiting
+## 📜 License
 
-## License
-
-MIT
-
-## Support
-
-For issues or questions, please open an issue on GitHub.
+MIT License\
+Feel free to use, modify, and contribute!
